@@ -1,0 +1,21 @@
+#generateSpiralsGcode {
+    margin-top: 8px;
+}
+
+#spiralsForm .control-label {
+    display: block;
+    float: none;
+    width: auto;
+    margin-bottom: 4px;
+    text-align: left;
+}
+
+#spiralsForm .controls {
+    margin-left: 0;
+}
+
+#spiralsForm input[type="number"] {
+    width: 240px;
+    max-width: 100%;
+    box-sizing: border-box;
+}

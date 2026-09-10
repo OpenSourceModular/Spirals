@@ -1,0 +1,65 @@
+<h3>Spirals</h3>
+<form id="spiralsForm" class="form-horizontal" style="display:block;">
+    <div class="control-group">
+        <label class="control-label" for="spiralsStartRadius" style="display:inline-block; width:140px; text-align:right; margin-right:10px;">Start radius</label>
+        <div class="controls" style="display:inline-block; margin-left:0;">
+            <input id="spiralsStartRadius" type="number" step="0.001" value="0.0">
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label" for="spiralsEndRadius" style="display:inline-block; width:140px; text-align:right; margin-right:10px;">End radius</label>
+        <div class="controls" style="display:inline-block; margin-left:0;">
+            <input id="spiralsEndRadius" type="number" step="0.001" value="100.0">
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label" for="spiralsTurns" style="display:inline-block; width:140px; text-align:right; margin-right:10px;">Number of turns</label>
+        <div class="controls" style="display:inline-block; margin-left:0;">
+            <input id="spiralsTurns" type="number" step="0.001" value="1.0">
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label" for="spiralsSamples" style="display:inline-block; width:140px; text-align:right; margin-right:10px;">Sample count</label>
+        <div class="controls" style="display:inline-block; margin-left:0;">
+            <input id="spiralsSamples" type="number" step="1" value="100">
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label" for="spiralsGrowth" style="display:inline-block; width:140px; text-align:right; margin-right:10px;">Growth</label>
+        <div class="controls" style="display:inline-block; margin-left:0;">
+            <input id="spiralsGrowth" type="number" step="0.001" value="0.0">
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label" for="spiralsFeedrate" style="display:inline-block; width:140px; text-align:right; margin-right:10px;">Feedrate</label>
+        <div class="controls" style="display:inline-block; margin-left:0;">
+            <input id="spiralsFeedrate" type="number" step="1" value="1000">
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label" for="spiralsTotalDepth" style="display:inline-block; width:140px; text-align:right; margin-right:10px;">Total cut depth</label>
+        <div class="controls" style="display:inline-block; margin-left:0;">
+            <input id="spiralsTotalDepth" type="number" step="0.001" value="6.0">
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label" for="spiralsDepthPerPass" style="display:inline-block; width:140px; text-align:right; margin-right:10px;">Depth per pass</label>
+        <div class="controls" style="display:inline-block; margin-left:0;">
+            <input id="spiralsDepthPerPass" type="number" step="0.001" value="2.0">
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label" style="display:inline-block; width:140px; text-align:right; margin-right:10px;"></label>
+        <div class="controls" style="display:inline-block; margin-left:0;">
+            <button id="generateSpiralsGcode" class="btn" type="button">Generate gCode</button>
+        </div>
+    </div>
+</form>
