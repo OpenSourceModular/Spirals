@@ -2,16 +2,31 @@
     margin-top: 8px;
 }
 
+#spiralsForm .control-group {
+    margin-bottom: 1px;
+}
+
 #spiralsForm .control-label {
     display: block;
     float: none;
     width: auto;
-    margin-bottom: 4px;
+    margin-bottom: 0px;
     text-align: left;
 }
 
 #spiralsForm .controls {
     margin-left: 0;
+}
+
+#spiralsForm .spirals-plot-row {
+    margin-top: 12px;
+    margin-bottom: 0;
+}
+
+#spiralsForm .spirals-plot-controls {
+    display: block;
+    width: 100%;
+    max-width: none;
 }
 
 #spiralsForm input[type="number"] {

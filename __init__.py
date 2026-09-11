@@ -4,9 +4,9 @@ import sys
 
 __plugin_pythoncompat__ = ">=3.13,<4"
 __plugin_name__ = "Spirals"
-__plugin_version__ = "0.1.0"
+__plugin_version__ = "0.1.1"
 __plugin_identifier__ = "spirals"
-__plugin_description__ = "A minimal OctoPrint plugin that generates a one-line X-axis move gcode file."
+__plugin_description__ = "A minimal OctoPrint plugin that generates flat spirals."
 __plugin_author__ = "Spirals"
 __plugin_license__ = "MIT"
 __plugin_url__ = "https://example.com/spirals"

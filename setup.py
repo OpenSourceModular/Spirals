@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="OctoprintSpirals",
-    version="0.1.0",
+    version="0.1.1",
     packages=["octoprint_spirals"],
     include_package_data=True,
     install_requires=["octoprint"],
