@@ -87,6 +87,130 @@ $(function() {
         return deferred.promise();
     }
 
+    function drawSpiralPreview() {
+        const canvas = document.getElementById('spiralsPlot');
+        if (!canvas) {
+            return;
+        }
+
+        const rect = canvas.getBoundingClientRect();
+        const displayWidth = Math.max(200, Math.floor(rect.width || canvas.width));
+        const displayHeight = Math.max(200, Math.floor(rect.height || canvas.height));
+        const squareSize = Math.min(displayWidth, displayHeight);
+
+        if (canvas.width !== squareSize || canvas.height !== squareSize) {
+            canvas.width = squareSize;
+            canvas.height = squareSize;
+        }
+
+        const ctx = canvas.getContext('2d');
+        const width = canvas.width;
+        const height = canvas.height;
+        const margin = 20;
+
+        ctx.clearRect(0, 0, width, height);
+        ctx.fillStyle = '#f8f8f8';
+        ctx.fillRect(0, 0, width, height);
+
+        const startRadius = parseNumber($('#spiralsStartRadius').val(), 0.0);
+        const endRadius = parseNumber($('#spiralsEndRadius').val(), 100.0);
+        const diameter = Math.max(parseNumber($('#spiralsDiameter').val(), 100.0), 0.0);
+        const turns = Math.max(parseNumber($('#spiralsTurns').val(), 1.0), 0.1);
+        const samples = Math.max(2, Math.round(parseNumber($('#spiralsSamples').val(), 100)));
+        const growth = parseNumber($('#spiralsGrowth').val(), 0.0);
+        const invertZ = $('#spiralsInvertZ').is(':checked');
+
+        const spiralMaxRadius = Math.max(
+            Math.abs(endRadius),
+            Math.abs(startRadius),
+            diameter / 2,
+            ...Array.from({ length: samples }, (_, i) => {
+                const t = i / Math.max(samples - 1, 1);
+                const theta = t * turns * 2 * Math.PI;
+                return Math.abs(startRadius + (growth || (endRadius - startRadius)) * theta);
+            })
+        );
+        const radiusSpan = Math.max(spiralMaxRadius, 1.0);
+        const scale = (Math.min(width, height) - margin * 2) / (radiusSpan * 2.2);
+
+        const tickStepMm = 25;
+        const maxTickDistance = Math.max(0, Math.floor(radiusSpan / tickStepMm) * tickStepMm);
+
+        ctx.strokeStyle = '#d0d0d0';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(margin, height / 2);
+        ctx.lineTo(width - margin, height / 2);
+        ctx.moveTo(width / 2, margin);
+        ctx.lineTo(width / 2, height - margin);
+        ctx.stroke();
+
+        if (diameter > 0) {
+            const circleRadius = (diameter / 2) * scale;
+            ctx.beginPath();
+            ctx.arc(width / 2, height / 2, circleRadius, 0, Math.PI * 2);
+            ctx.strokeStyle = '#c17d00';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+        }
+
+        ctx.strokeStyle = '#9aa3ad';
+        ctx.lineWidth = 1;
+        ctx.fillStyle = '#555';
+        ctx.font = '10px sans-serif';
+        ctx.textAlign = 'right';
+        for (let mm = tickStepMm; mm <= maxTickDistance; mm += tickStepMm) {
+            const distancePx = mm * scale;
+
+            const leftX = width / 2 - distancePx;
+            const topY = height / 2 - distancePx;
+            const rightX = width / 2 + distancePx;
+            const bottomY = height / 2 + distancePx;
+
+            ctx.beginPath();
+            ctx.moveTo(leftX, height / 2 - 3);
+            ctx.lineTo(leftX, height / 2 + 3);
+            ctx.moveTo(width / 2 - 3, bottomY);
+            ctx.lineTo(width / 2 + 3, bottomY);
+            ctx.stroke();
+
+            ctx.textAlign = 'right';
+            ctx.fillText(String(mm), leftX - 4, height / 2 + 3);
+            ctx.textAlign = 'left';
+            ctx.fillText(String(mm), width / 2 + 6, bottomY + 3);
+
+            if (rightX < width - margin) {
+                ctx.beginPath();
+                ctx.moveTo(rightX, height / 2 - 3);
+                ctx.lineTo(rightX, height / 2 + 3);
+                ctx.moveTo(width / 2 - 3, topY);
+                ctx.lineTo(width / 2 + 3, topY);
+                ctx.stroke();
+            }
+        }
+
+        ctx.beginPath();
+        for (let i = 0; i < samples; i++) {
+            const t = i / (samples - 1);
+            const theta = t * turns * 2 * Math.PI;
+            const radius = startRadius + (growth || (endRadius - startRadius)) * theta;
+            const x = width / 2 + radius * Math.cos(theta) * scale;
+            const y = height / 2 + (invertZ ? -1 : 1) * radius * Math.sin(theta) * scale;
+
+            if (i === 0) {
+                ctx.moveTo(x, y);
+            } else {
+                ctx.lineTo(x, y);
+            }
+        }
+        ctx.strokeStyle = '#2369d1';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+    }
+
+    $('#spiralsForm input').on('input change', drawSpiralPreview);
+    drawSpiralPreview();
+
     $('#generateSpiralsGcode').on('click', function() {
         const payload = {
             start_radius: parseNumber($('#spiralsStartRadius').val(), 0.0),
@@ -96,7 +220,8 @@ $(function() {
             growth: parseNumber($('#spiralsGrowth').val(), 0.0),
             feedrate: parseNumber($('#spiralsFeedrate').val(), 1000),
             total_depth: parseNumber($('#spiralsTotalDepth').val(), 0.0),
-            depth_per_pass: parseNumber($('#spiralsDepthPerPass').val(), 0.0)
+            depth_per_pass: parseNumber($('#spiralsDepthPerPass').val(), 0.0),
+            invert_z: $('#spiralsInvertZ').is(':checked')
         };
 
         postGenerateCommand(payload)

@@ -105,6 +105,19 @@ class SpiralsPlugin(
         except (TypeError, ValueError):
             return float(default)
 
+    @staticmethod
+    def _bool_param(params, key, default):
+        value = params.get(key, default)
+        if value is None:
+            return bool(default)
+        if isinstance(value, str):
+            lowered = value.strip().lower()
+            if lowered in {"1", "true", "yes", "on"}:
+                return True
+            if lowered in {"0", "false", "no", "off"}:
+                return False
+        return bool(value)
+
     def _build_gcode(self, params):
         start_radius = self._float_param(params, "start_radius", 0.0)
         end_radius = self._float_param(params, "end_radius", 100.0)
@@ -113,6 +126,7 @@ class SpiralsPlugin(
         depth_per_pass = self._float_param(params, "depth_per_pass", 0.0)
         samples = int(self._float_param(params, "samples", 100.0))
         feedrate = self._float_param(params, "feedrate", 1000.0)
+        invert_z = self._bool_param(params, "invert_z", True)
         growth = self._float_param(params, "growth", (end_radius - start_radius) / max(turns * 2.0 * math.pi, 1e-9))
 
         if turns <= 0:
@@ -147,7 +161,7 @@ class SpiralsPlugin(
             for i in range(samples):
                 theta = 2.0 * math.pi * turns * (i / max(samples - 1, 1))
                 radius = start_radius + growth * theta
-                z = -radius
+                z = -radius if invert_z else radius
                 x = -cumulative_depth
                 a = math.degrees(theta)
                 lines.append(f"G1 X{x:.4f} Z{z:.4f} A{a:.4f} F{feedrate:.4f}")
@@ -157,14 +171,13 @@ class SpiralsPlugin(
             lines.append(f"G0 X{start_x:.4f} A0.0000")
             lines.append("G0 Z0.0000")
 
-        lines.append(f"G0 X{end_x:.4f} A0.0000")
         lines.append("M5")
         return "\n".join(lines) + "\n"
 
 
 __plugin_pythoncompat__ = ">=3.13,<4"
 __plugin_name__ = "Spirals"
-__plugin_version__ = "0.1.0"
+__plugin_version__ = "0.1.1"
 __plugin_identifier__ = "spirals"
 __plugin_description__ = "Generates gcode for a spiral cut on a flat disc using X/Z/A motion."
 __plugin_author__ = "Spirals"

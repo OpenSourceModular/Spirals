@@ -71,3 +71,40 @@ def test_build_gcode_generates_spiral_passes_and_retracts():
     assert "G0 X0.0000 A0.0000" in gcode
     assert "A720.0000" in gcode or "A720.000" in gcode
     assert "X-2.0000" in gcode or "X-4.0000" in gcode or "X-6.0000" in gcode
+
+
+def test_build_gcode_can_disable_z_inversion():
+    plugin = object.__new__(SpiralsPlugin)
+
+    gcode = plugin._build_gcode({
+        "start_radius": 0.0,
+        "end_radius": 10.0,
+        "turns": 1,
+        "samples": 3,
+        "feedrate": 500.0,
+        "total_depth": 2.0,
+        "depth_per_pass": 2.0,
+        "invert_z": False,
+    })
+
+    assert "Z0.0000" in gcode
+    assert "Z5.0000" in gcode
+    assert "Z10.0000" in gcode
+
+
+def test_build_gcode_defaults_to_inverted_z():
+    plugin = object.__new__(SpiralsPlugin)
+
+    gcode = plugin._build_gcode({
+        "start_radius": 0.0,
+        "end_radius": 10.0,
+        "turns": 1,
+        "samples": 3,
+        "feedrate": 500.0,
+        "total_depth": 2.0,
+        "depth_per_pass": 2.0,
+    })
+
+    assert "Z-0.0000" in gcode
+    assert "Z-5.0000" in gcode
+    assert "Z-10.0000" in gcode
